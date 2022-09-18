@@ -1,83 +1,143 @@
 <template>
-  <v-row justify="center" align="center">
-    <v-col cols="12" sm="8" md="6">
-      <v-card class="logo py-4 d-flex justify-center">
-        <NuxtLogo />
-        <VuetifyLogo />
-      </v-card>
-      <v-card>
-        <v-card-title class="headline">
-          Welcome to the Vuetify + Nuxt.js template
-        </v-card-title>
-        <v-card-text>
-          <p>Vuetify is a progressive Material Design component framework for Vue.js. It was designed to empower developers to create amazing applications.</p>
-          <p>
-            For more information on Vuetify, check out the <a
-              href="https://vuetifyjs.com"
-              target="_blank"
-              rel="noopener noreferrer"
-            >
-              documentation
-            </a>.
-          </p>
-          <p>
-            If you have questions, please join the official <a
-              href="https://chat.vuetifyjs.com/"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="chat"
-            >
-              discord
-            </a>.
-          </p>
-          <p>
-            Find a bug? Report it on the github <a
-              href="https://github.com/vuetifyjs/vuetify/issues"
-              target="_blank"
-              rel="noopener noreferrer"
-              title="contribute"
-            >
-              issue board
-            </a>.
-          </p>
-          <p>Thank you for developing with Vuetify and I look forward to bringing more exciting features in the future.</p>
-          <div class="text-xs-right">
-            <em><small>&mdash; John Leider</small></em>
-          </div>
-          <hr class="my-3">
-          <a
-            href="https://nuxtjs.org/"
-            target="_blank"
-            rel="noopener noreferrer"
+  <v-main>
+    <v-row justify="center" align="center" style="height: 90vh">
+      <v-col cols="auto">
+        <v-card flat style="background-color: inherit">
+          <v-card-title
+            class="justify-center my-4"
+            style="font-size: 53px; font-weight: bold; color: #3b4043"
           >
-            Nuxt Documentation
-          </a>
-          <br>
-          <a
-            href="https://github.com/nuxt/nuxt.js"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Nuxt GitHub
-          </a>
-        </v-card-text>
-        <v-card-actions>
-          <v-spacer />
-          <v-btn
-            color="primary"
-            nuxt
-            to="/inspire"
-          >
-            Continue
-          </v-btn>
-        </v-card-actions>
-      </v-card>
-    </v-col>
-  </v-row>
+            会話デッキ（仮）
+          </v-card-title>
+          <v-card-text class="mt-8" style="padding;: 16px; color: #3b4043">
+            <p style="font-size: 16px; text-align: center">
+              あー、ちゃんと話すこと準備しとけばよかったなぁってことありませんか。<br />
+              これはそんな⽤意周到なあなたのために作成されたWebアプリです。<br />
+              あなたの⽇常をより豊かになることをお祈りしております。<br />
+            </p>
+          </v-card-text>
+          <v-text-field
+            placeholder="デッキコード(12桁)"
+            v-model="deckCode"
+            solo
+            dense
+            outlined
+            flat
+            clearable
+            style="width: 340px; margin: auto"
+          ></v-text-field>
+          <v-card-actions style="justify-content: center">
+            <v-btn
+              class="mx-5"
+              style="
+                width: 180px;
+                height: 60px;
+                font-weight: bold;
+                font-size: 20px;
+                color: white;
+              "
+              depressed
+              color="#004BB1"
+              @click="DuelStart()"
+            >
+              デュエル開始
+            </v-btn>
+            <v-btn
+              class="mx-5"
+              style="
+                width: 180px;
+                height: 60px;
+                font-weight: bold;
+                font-size: 20px;
+                color: #004bb1;
+              "
+              depressed
+              outlined
+              @click="DeckEdit()"
+            >
+              デッキ編集
+            </v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-col>
+    </v-row>
+  </v-main>
 </template>
 
 <script>
 export default {
-  name: 'IndexPage'
-}
+  head() {
+    return {
+      title: "ホーム",
+    };
+  },
+  data() {
+    return {
+      deckCode: null,
+    };
+  },
+  methods: {
+    DuelStart() {
+      console.log("click duel start [" + this.deckCode + "]");
+      switch (this.CheckDeckCode()) {
+        case "NotEntered":
+          break;
+        case "Exist":
+          this.$router.push(`/topic_deck/duel/${this.deckCode}`);
+          break;
+        case "NotExist":
+          alert("存在しないデッキコードです");
+          break;
+      }
+    },
+    DeckEdit() {
+      console.log("click deck edit [" + this.deckCode + "]");
+
+      switch (this.CheckDeckCode()) {
+        case "NotEntered":
+          // 存在しないデッキコードを生成
+          const chars =
+            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+          let newDeckCode = "";
+          while (newDeckCode === "") {
+            for (let i = 0; i < 12; i++) {
+              newDeckCode += chars.charAt(
+                Math.floor(Math.random() * chars.length)
+              );
+            }
+          }
+          console.log(newDeckCode);
+          this.$router.push(`topic_deck/deck_edit/${newDeckCode}`);
+          break;
+        case "Exist":
+          this.$router.push(`topic_deck/deck_edit/${this.deckCode}`);
+          break;
+        case "NotExist":
+          alert("存在しないデッキコードです");
+          break;
+      }
+    },
+    // TODO: enum使いてぇ。
+    CheckDeckCode() {
+      let result = "";
+      // 入力チェック
+      if (this.deckCode === null) {
+        result = "NotEntered";
+      }
+      // 存在チェック
+      // else if(){
+      //   result = 'Exist'
+      // }
+      // それ以外
+      else {
+        result = "NotExist";
+      }
+      console.log("code check state:" + result);
+
+      return result;
+    },
+  },
+};
 </script>
+
+<style></style>
