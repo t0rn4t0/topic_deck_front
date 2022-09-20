@@ -81,12 +81,13 @@ export default {
       console.log("click duel start [" + this.deckCode + "]");
       switch (this.CheckDeckCode()) {
         case "NotEntered":
+          alert("デュエルを開始するにはデッキコードが必須です。");
           break;
         case "Exist":
           this.$router.push(`/topic_deck/duel/${this.deckCode}`);
           break;
         case "NotExist":
-          alert("存在しないデッキコードです");
+          alert("存在しないデッキコードです。");
           break;
       }
     },
@@ -113,7 +114,7 @@ export default {
           this.$router.push(`topic_deck/deck_edit/${this.deckCode}`);
           break;
         case "NotExist":
-          alert("存在しないデッキコードです");
+          alert("存在しないデッキコードです。");
           break;
       }
     },
