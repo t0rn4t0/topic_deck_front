@@ -29,7 +29,7 @@
           <v-col cols="auto">
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-btn icon v-on="on">
+                <v-btn icon v-on="on" @click="deckCodeCopyToClipboard">
                   <v-icon>mdi-content-copy</v-icon>
                 </v-btn>
               </template>
@@ -299,6 +299,9 @@ export default {
       }
       alert("デュエルスタート！");
       this.$router.push(`/topic_deck/duel/${this.$route.params.code}`);
+    },
+    deckCodeCopyToClipboard() {
+      navigator.clipboard.writeText(this.$route.params.code);
     },
   },
 };
