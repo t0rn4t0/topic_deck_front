@@ -78,7 +78,6 @@ export default {
   },
   methods: {
     DuelStart() {
-      console.log("click duel start [" + this.deckCode + "]");
       switch (this.CheckDeckCode()) {
         case "NotEntered":
           alert("デュエルを開始するにはデッキコードが必須です。");
@@ -92,8 +91,6 @@ export default {
       }
     },
     DeckEdit() {
-      console.log("click deck edit [" + this.deckCode + "]");
-
       switch (this.CheckDeckCode()) {
         case "NotEntered":
           // 存在しないデッキコードを生成
@@ -107,7 +104,6 @@ export default {
               );
             }
           }
-          console.log(newDeckCode);
           this.$router.push(`topic_deck/deck_edit/${newDeckCode}`);
           break;
         case "Exist":
@@ -133,7 +129,6 @@ export default {
       else {
         result = "NotExist";
       }
-      console.log("code check state:" + result);
 
       return result;
     },

@@ -53,9 +53,28 @@
               "
               color="#004BB1"
               depressed
+              :disabled="!isEditDeck"
+              :loading="isSaving"
+              @click="DeckSave()"
+            >
+              保存
+            </v-btn>
+          </v-col>
+          <v-col cols="auto">
+            <v-btn
+              class="mt-1"
+              style="
+                border-radius: 20px;
+                font-weight: bold;
+                font-size: 16px;
+                color: white;
+              "
+              color="#004BB1"
+              depressed
+              :disabled="isSaving"
               @click="DuelStart()"
             >
-              保存してデュエルへ
+              デュエルへ
             </v-btn>
           </v-col>
           <v-col cols="auto">
@@ -165,13 +184,15 @@ export default {
   data() {
     return {
       deckName: "新規デッキ",
+      isEditDeck: false,
+      isSaving: false,
       bkDeckName: "",
       isEditDeckName: false,
       cardList: [],
       bkCardList: [],
     };
   },
-  created() {
+  mounted() {
     for (let index = 0; index < 10; index++) {
       let a = {
         order: index,
@@ -183,6 +204,7 @@ export default {
     }
     this.bkCardList = this.cardList.concat();
   },
+  destroyed() {},
   methods: {
     cardListAdd() {
       let a = {
@@ -192,6 +214,7 @@ export default {
         edit: false,
       };
       this.cardList.push(a);
+      this.isEditDeck = true;
     },
     cardListDelete(item) {
       this.cardList = this.cardList.filter((v) => {
@@ -200,6 +223,7 @@ export default {
       this.cardList.forEach((v, index) => {
         v.order = index;
       });
+      this.isEditDeck = true;
     },
     isCardEdit(item) {
       item.edit = true;
@@ -216,6 +240,7 @@ export default {
       this.cardList.forEach((v, index) => {
         v.order = index;
       });
+      this.isEditDeck = true;
     },
     isDeckNameEdit() {
       if (!this.isEditDeckName) {
@@ -224,6 +249,9 @@ export default {
         if (this.deckName === "") {
           this.deckName = this.bkDeckName;
         }
+        if (!(this.deckName === this.bkDeckName)) {
+          this.isEditDeck = true;
+        }
       }
       this.isEditDeckName = !this.isEditDeckName;
     },
@@ -231,14 +259,16 @@ export default {
       this.cardList.forEach((v, index) => {
         v.order = index;
       });
+      this.isEditDeck = true;
     },
     setContext(item) {
       let str = item.context;
       str = str.replace(/\r?\n/g, "");
-      console.log(this.bkCardList);
-      console.log(this.cardList);
       if (str === "") {
         item.context = item.bkContext;
+      }
+      if (!(item.context === item.bkContext)) {
+        this.isEditDeck = true;
       }
       item.edit = false;
     },
@@ -246,12 +276,29 @@ export default {
       item.context = item.bkContext;
       item.edit = false;
     },
+    async DeckSave() {
+      this.isSaving = true;
+      setTimeout(() => {
+        this.isEditDeck = false;
+        this.isSaving = false;
+      }, 1000);
+    },
     DuelStart() {
       if (!this.cardList.length > 0) {
         alert("カードは一枚以上ないとだめです！");
         return;
       }
+      if (this.isEditDeck) {
+        if (
+          !confirm(
+            "デッキが保存されていません。このまま保存前のデッキで挑んでよろしいでしょうか？"
+          )
+        ) {
+          return;
+        }
+      }
       alert("デュエルスタート！");
+      this.$router.push(`/topic_deck/duel/${this.$route.params.code}`);
     },
   },
 };
