@@ -55,7 +55,7 @@
               depressed
               :disabled="!isEditDeck"
               :loading="isSaving"
-              @click="DeckSave()"
+              @click="deckSave()"
             >
               保存
             </v-btn>
@@ -72,7 +72,7 @@
               color="#004BB1"
               depressed
               :disabled="isSaving"
-              @click="DuelStart()"
+              @click="toDuel()"
             >
               デュエルへ
             </v-btn>
@@ -276,14 +276,14 @@ export default {
       item.context = item.bkContext;
       item.edit = false;
     },
-    async DeckSave() {
+    async deckSave() {
       this.isSaving = true;
       setTimeout(() => {
         this.isEditDeck = false;
         this.isSaving = false;
       }, 1000);
     },
-    DuelStart() {
+    toDuel() {
       if (!this.cardList.length > 0) {
         alert("カードは一枚以上ないとだめです！");
         return;

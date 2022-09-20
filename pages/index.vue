@@ -38,7 +38,7 @@
               "
               depressed
               color="#004BB1"
-              @click="DuelStart()"
+              @click="duelStart()"
             >
               デュエル開始
             </v-btn>
@@ -53,7 +53,7 @@
               "
               depressed
               outlined
-              @click="DeckEdit()"
+              @click="deckEdit()"
             >
               デッキ編集
             </v-btn>
@@ -77,8 +77,8 @@ export default {
     };
   },
   methods: {
-    DuelStart() {
-      switch (this.CheckDeckCode()) {
+    duelStart() {
+      switch (this.checkDeckCode()) {
         case "NotEntered":
           alert("デュエルを開始するにはデッキコードが必須です。");
           break;
@@ -90,8 +90,8 @@ export default {
           break;
       }
     },
-    DeckEdit() {
-      switch (this.CheckDeckCode()) {
+    deckEdit() {
+      switch (this.checkDeckCode()) {
         case "NotEntered":
           // 存在しないデッキコードを生成
           const chars =
@@ -115,7 +115,7 @@ export default {
       }
     },
     // TODO: enum使いてぇ。
-    CheckDeckCode() {
+    checkDeckCode() {
       let result = "";
       // 入力チェック
       if (this.deckCode === null) {
